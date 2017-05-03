@@ -2,9 +2,11 @@ var koa = require('koa');
 var router = require('koa-router')();
 var todolist = require('./handlers/todolist');
 var bodyParser = require('koa-bodyparser');
+var logger = require('koa-logger');
 
 var app = new koa();
 
+app.use(logger());
 app.use(bodyParser({
   onerror (err, ctx) {
     console.log(err);
