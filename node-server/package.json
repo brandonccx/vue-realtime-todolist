@@ -1,0 +1,12 @@
+{
+  "name": "vue-realtime-todolist-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Brandon Chen",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.2.0",
+    "koa-bodyparser": "3",
+    "koa-router": "^7.1.1"
+  }
+}

@@ -9,7 +9,7 @@
         <mu-float-button @click="add" icon="add" mini/>
       </mu-flexbox-item>
     </mu-flexbox>
-    <mu-paper v-for="(item, i) in list" :key="i" :zDepth="2"
+    <mu-paper v-for="item in list" :key="item.id" :zDepth="2"
       class="center item">
       <mu-flexbox>
         <mu-flexbox-item>
@@ -18,10 +18,10 @@
         <mu-flexbox-item>
           <mu-icon-button class="pull-right"
             icon="close"
-            @click="remove(i)"/>
+            @click="remove(item.id)"/>
           <mu-icon-button class="pull-right"
             icon="flight_takeoff"
-            @click="run(item)"/>
+            @click="run(item.id)"/>
         </mu-flexbox-item>
       </mu-flexbox>
     </mu-paper>
@@ -29,6 +29,11 @@
 </template>
 
 <script>
+let getList = fetch('/api/list')
+let headers = new Headers({
+  'content-type': 'application/json;charset=utf-8'
+})
+
 export default {
   name: 'todolist',
   data () {
@@ -37,24 +42,46 @@ export default {
       list: []
     }
   },
+  created: function () {
+    getList
+      .then((res) => res.json())
+      .then((data) => {
+        this.list = data
+      })
+  },
   methods: {
     add () {
       if (this.input === '') {
         return
       }
-      this.list.push({
-        name: this.input,
-        progress: 0
-      })
-      this.input = ''
-    },
-    remove (idx) {
-      if (idx >= 0 && idx < this.list.length) {
-        this.list.splice(idx, 1)
+      let data = {
+        name: this.input
       }
+      fetch('/api/list', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          this.list.push(data)
+          this.input = ''
+        })
     },
-    run (item) {
-      console.log(item.name)
+    remove (id) {
+      fetch('/api/list', {
+        method: 'DELETE',
+        body: JSON.stringify({id}),
+        headers
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          var d = this.list.filter((data) => data.id === id)[0]
+          this.list.splice(this.list.indexOf(d), 1)
+        })
+    },
+    run (id) {
+      console.log(id)
     }
   }
 }
