@@ -11,6 +11,8 @@ Vue.use(MuseUI)
 
 Vue.config.productionTip = false
 
+store.dispatch('io')
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -5,15 +5,20 @@
 Need node v6+ (best: v6.10.2), yarn v0.2+ (best: v0.23.3)
 
 ## Start
-start node server
+### start node server for demo
 ```bash
 cd node-server
-node index.js
+yarn run start
 ```
-start web development
+and open http://localhost:3000
+
+### start web development
 ```bash
 cd web
 yarn run start
 ```
+will automatically open http://localhost:8080
+
+_The demo dosen't support IE_
 
 Enjoy yourself!

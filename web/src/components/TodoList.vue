@@ -16,10 +16,18 @@
           <span>{{item.name}}</span>
         </mu-flexbox-item>
         <mu-flexbox-item>
+          <mu-circular-progress mode="determinate"
+            :value="item.progress" :size="32"
+            v-if="item.progress !== 100"/>
+          <mu-icon value="done" color="green"
+            v-if="item.progress === 100"/>
+        </mu-flexbox-item>
+        <mu-flexbox-item>
           <mu-icon-button class="pull-right"
             icon="close"
             @click="remove(item.id)"/>
           <mu-icon-button class="pull-right"
+            v-if="item.progress === 0"
             icon="flight_takeoff"
             @click="run(item.id)"/>
         </mu-flexbox-item>
@@ -54,7 +62,7 @@ export default {
       this.$store.dispatch('remove', id)
     },
     run (id) {
-      console.log(id)
+      this.$store.dispatch('run', id)
     }
   }
 }
@@ -73,9 +81,12 @@ export default {
   display: block;
 }
 .item {
-  width: 320px;
+  width: 400px;
   margin-bottom: 20px;
   padding: 0 20px 0;
   text-align: left;
+}
+.mu-circular-progress {
+  margin-top: 4px;
 }
 </style>

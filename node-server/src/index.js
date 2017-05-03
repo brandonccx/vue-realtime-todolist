@@ -1,12 +1,17 @@
-var koa = require('koa');
+var path = require('path');
+var Koa = require('koa');
 var router = require('koa-router')();
 var todolist = require('./handlers/todolist');
 var bodyParser = require('koa-bodyparser');
 var logger = require('koa-logger');
+var IO = require('koa-socket');
+var stat = require('koa-static');
 
-var app = new koa();
+const app = new Koa();
+const io = new IO();
 
 app.use(logger());
+app.use(stat(path.resolve(__dirname, '../..', 'web/dist')));
 app.use(bodyParser({
   onerror (err, ctx) {
     console.log(err);
@@ -14,16 +19,31 @@ app.use(bodyParser({
   }
 }));
 
-router.get('/api/list', function (ctx, next) {
-  ctx.body = todolist.getList();
+io.attach(app);
+
+io.on('connection', (ctx, data) => {
+  console.log('joined websocket', data);
 });
 
-router.post('/api/list', function (ctx, next) {
-  ctx.body = todolist.add(ctx.request.body);
+app.use((ctx, next) => {
+  ctx.io = io;
+  next();
 });
 
-router.del('/api/list', function (ctx, next) {
-  ctx.body = todolist.remove(ctx.request.body.id);
+router.get('/api/list', (ctx, next) => {
+  todolist.getList(ctx, next);
+});
+
+router.post('/api/list', (ctx, next) => {
+  todolist.add(ctx, next);
+});
+
+router.del('/api/list', (ctx, next) => {
+  todolist.remove(ctx, next);
+});
+
+router.post('/api/list/run/:id', (ctx, next) => {
+  todolist.run(ctx, next);
 });
 
 app

@@ -15,6 +15,12 @@ export default {
   [C.UPDATE] (state, data) {
     if (data instanceof Array) {
       state.list = data
+    } else {
+      state.list.forEach(item => {
+        if (item.id === data.id) {
+          Object.assign(item, data)
+        }
+      })
     }
   }
 }
