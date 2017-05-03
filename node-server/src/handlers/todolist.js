@@ -1,4 +1,4 @@
-var cache = [{
+let cache = [{
   id: new Date().getTime(),
   name: 'example',
   progress: 0
@@ -16,9 +16,14 @@ function add(data) {
 }
 
 function remove(id) {
-  var d = cache.filter((data) => data.id === id)[0];
-  cache.splice(cache.indexOf(d), 1);
-  return d;
+  let data = {};
+  cache.forEach((item, i) => {
+    if (item.id === id) {
+      data = cache.splice(i, 1)[0];
+      return false;
+    }
+  })
+  return data;
 }
 
 module.exports = {

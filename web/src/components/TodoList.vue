@@ -29,56 +29,29 @@
 </template>
 
 <script>
-let getList = fetch('/api/list')
-let headers = new Headers({
-  'content-type': 'application/json;charset=utf-8'
-})
+import {mapState, mapActions} from 'vuex'
 
 export default {
   name: 'todolist',
   data () {
     return {
-      input: '',
-      list: []
+      input: ''
     }
   },
+  computed: {
+    ...mapState(['list'])
+  },
   created: function () {
-    getList
-      .then((res) => res.json())
-      .then((data) => {
-        this.list = data
-      })
+    this.update()
   },
   methods: {
+    ...mapActions(['update']),
     add () {
-      if (this.input === '') {
-        return
-      }
-      let data = {
-        name: this.input
-      }
-      fetch('/api/list', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          this.list.push(data)
-          this.input = ''
-        })
+      this.$store.dispatch('add', this.input)
+        .then(() => (this.input = ''))
     },
     remove (id) {
-      fetch('/api/list', {
-        method: 'DELETE',
-        body: JSON.stringify({id}),
-        headers
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          var d = this.list.filter((data) => data.id === id)[0]
-          this.list.splice(this.list.indexOf(d), 1)
-        })
+      this.$store.dispatch('remove', id)
     },
     run (id) {
       console.log(id)

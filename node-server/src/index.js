@@ -28,4 +28,4 @@ app
   .use(router.routes())
   .use(router.allowedMethods());
 
-app.listen(3000, () => {console.log('Listen at 3000...')});
+app.listen(3000, () => console.log('Listening at localhost:3000...'));
